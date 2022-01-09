@@ -9,9 +9,9 @@ networks:
       config:
         - subnet: 10.0.255.0/24
 
-#configs:
-#  influx:
-#    file: ./configs/influxdb.conf
+configs:
+ telegraf_global:
+   file: ./configs/telegraf_global.conf
 
 services:
   influxdb2:
@@ -61,11 +61,14 @@ services:
       - "8094:8094"
       - "8125:8125"
     volumes:
-      - ./configs/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      # - ./configs/telegraf.conf:/etc/telegraf/telegraf.conf:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /sys:/host/sys:ro
       - /proc:/host/proc:ro
       - /etc:/host/etc:ro
+    configs:
+      - source: telegraf_global
+        target: /etc/telegraf/telegraf.conf
     environment:
       - HOST_PROC=/host/proc
       - HOST_SYS=/host/sys
