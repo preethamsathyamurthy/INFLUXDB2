@@ -9,9 +9,9 @@ networks:
       config:
         - subnet: 10.0.255.0/24
 
-configs:
-  influx:
-    file: ./configs/influxdb.conf
+#configs:
+#  influx:
+#    file: ./configs/influxdb.conf
 
 services:
   influxdb2:
@@ -26,7 +26,7 @@ services:
       - "8086:8086"
     volumes:
       - type: bind
-        source: /Users/preetham/Documents/DockerSwarm/influxdb2/test/config
+        source: ./test/config
         target: /var/lib/influxdb2:rw
       # - type: bind
       #   source: /Users/preetham/Documents/DockerSwarm/influxdb2/test/influxdbdata
