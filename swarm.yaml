@@ -23,7 +23,7 @@ services:
     # network_mode: "bridge"
     container_name: influxdb2
     ports:
-      - "8086:8086"
+      - "80:8086"
     volumes:
       - type: bind
         source: ./test/config
@@ -52,6 +52,7 @@ services:
           memory: 100M
   telegraf_nodes:
     image: telegraf:latest
+    user: telegraf:1000
     networks:
       - network
     pid: "host"
