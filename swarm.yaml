@@ -53,9 +53,7 @@ services:
   telegraf_nodes:
     image: telegraf:latest
     networks:
-      network:
-        aliases:
-          - mysql
+      - network
     pid: "host"
     hostname: "{{.Node.ID}}"
     ports:
