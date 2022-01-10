@@ -12,6 +12,8 @@ networks:
 configs:
  telegraf_global:
    file: ./configs/telegraf_global.conf
+ telegraf:
+   file: ./configs/telegraf.conf
 
 services:
   influxdb2:
@@ -23,7 +25,8 @@ services:
     # network_mode: "bridge"
     container_name: influxdb2
     ports:
-      - "80:8086"
+      # - "80:8086"
+      - "8086:8086"
     volumes:
       - type: bind
         source: ./test/config
@@ -80,6 +83,65 @@ services:
       resources:
         limits:
           cpus: '0.5'
+          memory: 128M
+        reservations:
+          cpus: '0.1'
+          memory: 100M
+  telegraf:
+    image: telegraf:latest
+    user: telegraf:1000
+    networks:
+      - network
+    pid: "host"
+    hostname: "{{.Node.ID}}"
+    ports:
+      - "8082:8092"
+      - "8084:8094"
+      - "8185:8125"
+    volumes:
+      # - ./configs/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # - /sys:/host/sys:ro
+      # - /proc:/host/proc:ro
+      # - /etc:/host/etc:ro
+    configs:
+      - source: telegraf
+        target: /etc/telegraf/telegraf.conf
+    environment:
+      - HOST_PROC=/host/proc
+      - HOST_SYS=/host/sys
+      - HOST_ETC=/host/etc
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+        reservations:
+          cpus: '0.1'
+          memory: 100M
+  grafana8:
+    image: grafana/grafana:latest
+    networks:
+      network:
+        aliases:
+          - grafana
+    container_name: grafana8
+    volumes:
+      - ./test/grafana:/var/lib/grafana
+    ports:
+      - "4000:3000"
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          cpus: '1'
           memory: 256M
         reservations:
           cpus: '0.1'
