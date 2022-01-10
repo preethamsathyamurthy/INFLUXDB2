@@ -31,6 +31,9 @@ services:
       - type: bind
         source: ./test/config
         target: /var/lib/influxdb2:rw
+      - type: volume
+        source: influx
+        target: /var/lib/influxdb2:rw
       # - type: bind
       #   source: /Users/preetham/Documents/DockerSwarm/influxdb2/test/influxdbdata
       #   target: /etc/influxdb2
@@ -132,7 +135,7 @@ services:
           - grafana
     container_name: grafana8
     volumes:
-      - ./test/grafana:/var/lib/grafana
+      - grafana:/var/lib/grafana
     ports:
       - "4000:3000"
     restart: always
@@ -146,3 +149,7 @@ services:
         reservations:
           cpus: '0.1'
           memory: 100M
+
+volumes:
+  influx:
+  grafana:
