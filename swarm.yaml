@@ -28,9 +28,9 @@ services:
       # - "80:8086"
       - "8086:8086"
     volumes:
-      - type: bind
-        source: ./test/config
-        target: /var/lib/influxdb2:rw
+      # - type: bind
+      #   source: ./test/config
+      #   target: /var/lib/influxdb2:rw
       - type: volume
         source: influx
         target: /var/lib/influxdb2:rw
